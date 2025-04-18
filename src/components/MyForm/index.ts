@@ -1,1 +1,0 @@
-export { MyForm } from "./MyForm";

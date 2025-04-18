@@ -1,0 +1,14 @@
+.FormHeader {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding: 16px;
+  background-color: #179ED8;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.FormHeader span {
+  padding-right: 10px;
+}
