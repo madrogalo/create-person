@@ -1,17 +1,42 @@
-import { Form, Field } from "react-final-form";
+import { useState } from "react";
+
+import { Form } from "react-final-form";
 
 import { FormHeader } from "../../FormHeader";
 import { InputField } from "../../InputField";
-import { required } from "../../../utils/validators";
+import {
+  phoneValidator,
+  required,
+  validateDate,
+  validateEmail,
+  validateSecretWord,
+  validateSerialNumber,
+  validateValidUntil,
+  validateWhenIssued,
+} from "../../../utils/validators";
 
 export function CreatePersonForm() {
+  const [formData, setFormData] = useState<any>(null);
+
   const onSubmit = (values: any) => {
     console.log("Submitted values:", values);
+    setFormData(values);
   };
+
+  const optionalIfToggleOn =
+    (toggleState: string) =>
+    (value: string, allValues: Record<string, any>) => {
+      return allValues?.[toggleState] ? required(value) : undefined;
+    };
+
   return (
     <>
       <FormHeader title="Створення персони" />
       <Form
+        initialValues={{
+          toggle_patronymic: true,
+          toggle_taxId: true,
+        }}
         onSubmit={onSubmit}
         render={({ handleSubmit }) => (
           <form onSubmit={handleSubmit}>
@@ -30,16 +55,19 @@ export function CreatePersonForm() {
                 label="Ім'я"
                 name="name"
                 component="input"
-                placeholder={"Ім'я"}
+                placeholder={""}
                 isRequired
+                validate={required}
               />
               <InputField
                 label="По батькові"
                 name="patronymic"
                 component="input"
-                placeholder={""}
+                placeholder=""
                 isToggle
                 isRequired
+                validate={optionalIfToggleOn("toggle_patronymic")}
+                toggleName="toggle_patronymic"
               />
             </div>
             <div style={{ display: "flex", gap: "10px" }}>
@@ -47,17 +75,21 @@ export function CreatePersonForm() {
                 name="identificationNumber"
                 component="input"
                 label={"РНОКПП (IПH)"}
-                placeholder={"РНОКПП (IПH)"}
+                placeholder={""}
                 isToggle
                 isRequired
-                validate={required}
+                validate={optionalIfToggleOn("toggle_taxId")}
+                toggleName="toggle_taxId"
               />
+
               <InputField
                 name="dateOfBirth"
                 component="input"
                 label={"Дата народження"}
                 placeholder={"01.10.1980"}
                 isRequired
+                formatDate
+                validate={validateDate}
               />
               <InputField
                 name="sex"
@@ -84,12 +116,14 @@ export function CreatePersonForm() {
                 component="input"
                 placeholder={"Країна народження"}
                 isRequired
+                validate={required}
               />
               <InputField
                 name="placeOfBirth"
                 component="input"
                 placeholder={"Місце народження"}
                 isRequired
+                validate={required}
               />
             </div>
             <div style={{ display: "flex", gap: "10px", paddingTop: "10px" }}>
@@ -117,7 +151,7 @@ export function CreatePersonForm() {
                 component="input"
                 placeholder={"Секретне слово (не менше 6 символів)"}
                 isRequired
-                validate={required}
+                validate={validateSecretWord}
               />
             </div>
             <div style={{ display: "flex", gap: "10px", paddingTop: "10px" }}>
@@ -125,9 +159,11 @@ export function CreatePersonForm() {
                 name="phoneNumber"
                 component="input"
                 label={"Контактний номер телефону"}
-                placeholder={"+38 (_).__-__-__"}
+                placeholder={"+38 (___)___-__-__"}
                 isRequired
-                validate={required}
+                // validate={required}
+                formatPhone
+                validate={phoneValidator}
               />
               <InputField
                 name="email"
@@ -135,7 +171,7 @@ export function CreatePersonForm() {
                 label={"Адреса електронної пошти"}
                 placeholder={"example@example.com"}
                 isRequired
-                validate={required}
+                validate={validateEmail}
               />
             </div>
             <h2>Документ, що посвідчує особу</h2>
@@ -177,7 +213,7 @@ export function CreatePersonForm() {
                 label={"Серія (за наявності), номер"}
                 placeholder={""}
                 isRequired
-                validate={required}
+                validate={validateSerialNumber}
               />
             </div>
             <div style={{ display: "flex", gap: "10px", paddingTop: "10px" }}>
@@ -187,7 +223,8 @@ export function CreatePersonForm() {
                 label={"Коли видано"}
                 placeholder={"31.12.1971"}
                 isRequired
-                validate={required}
+                validate={validateWhenIssued}
+                formatDate
               />
               <InputField
                 name="validUntil"
@@ -195,6 +232,8 @@ export function CreatePersonForm() {
                 label={"Діє до"}
                 placeholder={"31.12.1971"}
                 isRequired
+                validate={validateValidUntil}
+                formatDate
               />
             </div>
             <div style={{ display: "flex", gap: "10px", paddingTop: "10px" }}>
@@ -214,6 +253,20 @@ export function CreatePersonForm() {
               />
             </div>
             <button type="submit">Submit</button>
+
+            {formData && (
+              <pre
+                style={{
+                  marginTop: "20px",
+                  padding: "10px",
+                  backgroundColor: "#f4f4f4",
+                  borderRadius: "5px",
+                  fontSize: "14px",
+                }}
+              >
+                {JSON.stringify(formData, null, 2)}
+              </pre>
+            )}
           </form>
         )}
       />

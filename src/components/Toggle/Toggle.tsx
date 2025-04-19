@@ -1,7 +1,13 @@
 import { useState } from "react";
 import "./Toggle.css";
 
-export const Toggle = () => {
+export const Toggle = ({
+  checked,
+  idToggle,
+}: {
+  checked: boolean;
+  idToggle: string;
+}) => {
   const [isOn, setIsOn] = useState(false);
 
   return (
@@ -9,11 +15,13 @@ export const Toggle = () => {
       <input
         type="checkbox"
         className="toggle-checkbox"
-        id="toggle"
+        id={idToggle}
         checked={isOn}
-        onChange={() => setIsOn(!isOn)}
+        onChange={() => {
+          setIsOn(!isOn);
+        }}
       />
-      <label className="toggle-label" htmlFor="toggle" />
+      <label className="toggle-label" htmlFor={idToggle} />
     </div>
   );
 };
