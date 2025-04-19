@@ -1,8 +1,9 @@
-// src/components/InputField/index.tsx
 import { FC } from "react";
 import { Field } from "react-final-form";
-import "./InputField.css";
+import InputMask from "react-input-mask";
 import { Toggle } from "../Toggle";
+
+import "./InputField.css";
 
 type InputFieldProps = {
   name: string;
@@ -11,17 +12,25 @@ type InputFieldProps = {
   placeholder: string;
   isToggle?: boolean;
   isRequired?: boolean;
-  validate?: (value: any) => string | undefined;
+  validate?: (value: any, allValues?: any) => string | undefined;
   options?: Array<{ value: string; label: string }>;
+  formatPhone?: boolean;
+  formatDate?: boolean;
+  toggleName?: string;
 };
 
 export const InputField: FC<InputFieldProps> = ({
+  name,
   label,
+  component,
+  placeholder,
   isToggle,
   isRequired,
   validate,
+  formatPhone,
+  formatDate,
   options,
-  ...props
+  toggleName,
 }) => {
   return (
     <div className="inputField">
@@ -31,13 +40,16 @@ export const InputField: FC<InputFieldProps> = ({
         </label>
       )}
 
-      <Field {...props} validate={validate}>
+      <Field name={name} validate={validate}>
         {({ input, meta }) => (
           <>
-            {props.component === "select" ? (
-              <select {...input}>
-                <option value="" disabled selected>
-                  {props.placeholder}
+            {component === "select" ? (
+              <select
+                {...input}
+                className={meta.touched && meta.error ? "errorBorder" : ""}
+              >
+                <option value="" disabled>
+                  {placeholder}
                 </option>
                 {options?.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -45,9 +57,36 @@ export const InputField: FC<InputFieldProps> = ({
                   </option>
                 ))}
               </select>
+            ) : formatPhone ? (
+              <InputMask mask="+38 (099) 999-99-99" {...input} maskChar="_">
+                {(inputProps) => (
+                  <input
+                    {...inputProps}
+                    type="text"
+                    className={meta.touched && meta.error ? "errorBorder" : ""}
+                    placeholder={placeholder}
+                  />
+                )}
+              </InputMask>
+            ) : formatDate ? (
+              <InputMask mask="99.99.9999" {...input} maskChar="_">
+                {(inputProps) => (
+                  <input
+                    {...inputProps}
+                    type="text"
+                    className={meta.touched && meta.error ? "errorBorder" : ""}
+                    placeholder={placeholder}
+                  />
+                )}
+              </InputMask>
             ) : (
-              <input {...input} placeholder={props.placeholder} />
+              <input
+                {...input}
+                className={meta.touched && meta.error ? "errorBorder" : ""}
+                placeholder={placeholder}
+              />
             )}
+
             <div style={{ height: 20 }}>
               {meta.touched && meta.error && (
                 <div className="error" style={{ color: "red", fontSize: 12 }}>
@@ -61,7 +100,10 @@ export const InputField: FC<InputFieldProps> = ({
 
       {isToggle && (
         <div className="toggle">
-          <Toggle />
+          <Toggle
+            checked={true}
+            idToggle={toggleName ? toggleName : "defaultId"}
+          />
         </div>
       )}
     </div>
