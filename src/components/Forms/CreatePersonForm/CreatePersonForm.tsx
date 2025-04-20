@@ -23,7 +23,6 @@ export function CreatePersonForm() {
       <Form
         initialValues={{
           toggle_patronymic: true,
-
           toggle_identificationNumber: true,
         }}
         onSubmit={onSubmit}

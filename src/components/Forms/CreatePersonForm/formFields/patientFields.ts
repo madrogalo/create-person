@@ -37,6 +37,8 @@ export const patientFieldGroups = [
       isRequired: true,
       toggleName: "toggle_patronymic",
       validate: optionalIfToggleOn("toggle_patronymic"),
+      defaultText: "Немає по батькові",
+      explanationText: "Немає по батькові згідно документів",
     },
   ],
   [
@@ -49,6 +51,8 @@ export const patientFieldGroups = [
       isRequired: true,
       toggleName: "toggle_identificationNumber",
       validate: optionalIfToggleOn("toggle_identificationNumber"),
+      defaultText: "Немає РНОКПП (ІПН)",
+      explanationText: "Немає ІПН за віком чи має відмітку у паспорті",
     },
     {
       name: "dateOfBirth",
