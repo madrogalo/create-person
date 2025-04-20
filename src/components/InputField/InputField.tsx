@@ -14,9 +14,8 @@ type InputFieldProps = {
   isRequired?: boolean;
   validate?: (value: any, allValues?: any) => string | undefined;
   options?: Array<{ value: string; label: string }>;
-  formatPhone?: boolean;
-  formatDate?: boolean;
   toggleName?: string;
+  formatMask?: string;
 };
 
 export const InputField: FC<InputFieldProps> = ({
@@ -27,8 +26,7 @@ export const InputField: FC<InputFieldProps> = ({
   isToggle,
   isRequired,
   validate,
-  formatPhone,
-  formatDate,
+  formatMask,
   options,
   toggleName,
 }) => {
@@ -64,19 +62,8 @@ export const InputField: FC<InputFieldProps> = ({
                   </option>
                 ))}
               </select>
-            ) : formatPhone ? (
-              <InputMask mask="+38 (099) 999-99-99" {...input} maskChar="_">
-                {(inputProps) => (
-                  <input
-                    {...inputProps}
-                    type="text"
-                    className={meta.touched && meta.error ? "errorBorder" : ""}
-                    placeholder={placeholder}
-                  />
-                )}
-              </InputMask>
-            ) : formatDate ? (
-              <InputMask mask="99.99.9999" {...input} maskChar="_">
+            ) : formatMask ? (
+              <InputMask mask={formatMask} {...input} maskChar="_">
                 {(inputProps) => (
                   <input
                     {...inputProps}
