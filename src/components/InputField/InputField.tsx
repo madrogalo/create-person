@@ -32,6 +32,13 @@ export const InputField: FC<InputFieldProps> = ({
   options,
   toggleName,
 }) => {
+  const validateWrapper = (value: string, allValues: any) => {
+    if (isToggle && toggleName && !allValues?.[toggleName]) {
+      return undefined;
+    }
+    return validate?.(value, allValues);
+  };
+
   return (
     <div className="inputField">
       {label && (
@@ -40,7 +47,7 @@ export const InputField: FC<InputFieldProps> = ({
         </label>
       )}
 
-      <Field name={name} validate={validate}>
+      <Field name={name} validate={validateWrapper}>
         {({ input, meta }) => (
           <>
             {component === "select" ? (
@@ -97,14 +104,20 @@ export const InputField: FC<InputFieldProps> = ({
           </>
         )}
       </Field>
-
-      {isToggle && (
-        <div className="toggle">
-          <Toggle
-            checked={true}
-            idToggle={toggleName ? toggleName : "defaultId"}
-          />
-        </div>
+      {isToggle && toggleName && (
+        <Field name={toggleName} type="checkbox">
+          {({ input }) => {
+            return (
+              <div className="toggle">
+                <Toggle
+                  checked={input.checked ?? false}
+                  idToggle={toggleName}
+                  onChange={input.onChange}
+                />
+              </div>
+            );
+          }}
+        </Field>
       )}
     </div>
   );
