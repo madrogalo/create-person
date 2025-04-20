@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Field } from "react-final-form";
+import { Field, useFormState } from "react-final-form";
 import InputMask from "react-input-mask";
 import { Toggle } from "../Toggle";
 
@@ -16,6 +16,8 @@ type InputFieldProps = {
   options?: Array<{ value: string; label: string }>;
   toggleName?: string;
   formatMask?: string;
+  defaultText?: string;
+  explanationText?: string;
 };
 
 export const InputField: FC<InputFieldProps> = ({
@@ -29,9 +31,16 @@ export const InputField: FC<InputFieldProps> = ({
   formatMask,
   options,
   toggleName,
+  defaultText,
+  explanationText,
 }) => {
+  const { values } = useFormState();
+
+  const toggleValue = isToggle && toggleName ? values?.[toggleName] : undefined;
+  const isDisabled = isToggle && toggleName && toggleValue === false;
+
   const validateWrapper = (value: string, allValues: any) => {
-    if (isToggle && toggleName && !allValues?.[toggleName]) {
+    if (isToggle && toggleName && allValues?.[toggleName] === false) {
       return undefined;
     }
     return validate?.(value, allValues);
@@ -41,55 +50,75 @@ export const InputField: FC<InputFieldProps> = ({
     <div className="inputField">
       {label && (
         <label>
-          {label} {isRequired && "*"}
+          {label} {isRequired && (!isToggle || toggleValue) && "*"}
         </label>
       )}
 
       <Field name={name} validate={validateWrapper}>
-        {({ input, meta }) => (
-          <>
-            {component === "select" ? (
-              <select
-                {...input}
-                className={meta.touched && meta.error ? "errorBorder" : ""}
-              >
-                <option value="" disabled>
-                  {placeholder}
-                </option>
-                {options?.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            ) : formatMask ? (
-              <InputMask mask={formatMask} {...input} maskChar="_">
-                {(inputProps) => (
-                  <input
-                    {...inputProps}
-                    type="text"
-                    className={meta.touched && meta.error ? "errorBorder" : ""}
-                    placeholder={placeholder}
-                  />
-                )}
-              </InputMask>
-            ) : (
-              <input
-                {...input}
-                className={meta.touched && meta.error ? "errorBorder" : ""}
-                placeholder={placeholder}
-              />
-            )}
+        {({ input, meta }) => {
+          const fieldClass =
+            meta.touched && meta.error
+              ? "errorBorder"
+              : isDisabled
+              ? "dashedBottom"
+              : "";
 
-            <div style={{ height: 20 }}>
-              {meta.touched && meta.error && (
-                <div className="error" style={{ color: "red", fontSize: 12 }}>
-                  {meta.error}
-                </div>
+          const commonProps = {
+            ...input,
+            className: fieldClass,
+            placeholder,
+            readOnly: !!isDisabled,
+            value: isDisabled ? defaultText : input.value,
+          };
+
+          return (
+            <>
+              {component === "select" ? (
+                <select {...input} className={fieldClass}>
+                  <option value="" disabled>
+                    {placeholder}
+                  </option>
+                  {options?.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              ) : formatMask ? (
+                <InputMask
+                  mask={formatMask}
+                  {...input}
+                  disabled={isDisabled || undefined}
+                  maskChar="_"
+                  value={isDisabled ? defaultText : input.value}
+                >
+                  {(inputProps) => (
+                    <input
+                      {...inputProps}
+                      type="text"
+                      className={fieldClass}
+                      placeholder={placeholder}
+                      readOnly={isDisabled}
+                    />
+                  )}
+                </InputMask>
+              ) : (
+                <input {...commonProps} />
               )}
-            </div>
-          </>
-        )}
+
+              <div style={{ height: 20 }}>
+                {meta.touched && meta.error && (
+                  <div className="error" style={{ color: "red", fontSize: 12 }}>
+                    {meta.error}
+                  </div>
+                )}
+                {isDisabled && explanationText && (
+                  <div className="explanation">{explanationText}</div>
+                )}
+              </div>
+            </>
+          );
+        }}
       </Field>
       {isToggle && toggleName && (
         <Field name={toggleName} type="checkbox">
