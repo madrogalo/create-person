@@ -4,6 +4,7 @@ import { Form } from "react-final-form";
 
 import { FormHeader } from "../../FormHeader";
 import { InputField } from "../../InputField";
+import { Button } from "../../Button";
 import {
   phoneValidator,
   required,
@@ -14,12 +15,12 @@ import {
   validateValidUntil,
   validateWhenIssued,
 } from "../../../utils/validators";
+import "./CreatePersonForm.css";
 
 export function CreatePersonForm() {
   const [formData, setFormData] = useState<any>(null);
 
   const onSubmit = (values: any) => {
-    console.log("Submitted values:", values);
     setFormData(values);
   };
 
@@ -161,7 +162,6 @@ export function CreatePersonForm() {
                 label={"Контактний номер телефону"}
                 placeholder={"+38 (___)___-__-__"}
                 isRequired
-                // validate={required}
                 formatPhone
                 validate={phoneValidator}
               />
@@ -252,21 +252,10 @@ export function CreatePersonForm() {
                 placeholder={"РРРРММДД-XXXXX"}
               />
             </div>
-            <button type="submit">Submit</button>
-
-            {formData && (
-              <pre
-                style={{
-                  marginTop: "20px",
-                  padding: "10px",
-                  backgroundColor: "#f4f4f4",
-                  borderRadius: "5px",
-                  fontSize: "14px",
-                }}
-              >
-                {JSON.stringify(formData, null, 2)}
-              </pre>
-            )}
+            <div className="buttonWrapper">
+              <Button text={"Відправити"} />
+            </div>
+            {formData && <pre>{JSON.stringify(formData, null, 2)}</pre>}
           </form>
         )}
       />
