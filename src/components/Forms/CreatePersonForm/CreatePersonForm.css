@@ -11,3 +11,9 @@ pre {
   border-radius: 5px;
   font-size: 14px;
 }
+
+.row {
+  display: flex;
+  gap: 10px;
+  padding-top: 10px;
+}

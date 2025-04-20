@@ -33,7 +33,7 @@ export const validateSerialNumber = (
 };
 
 export const validateEmail = (value: string) => {
-  if (!value) return "Обов’язкове поле";
+  if (!value) return "Поле не може бути пустим";
 
   if (!value.includes("@")) {
     return "Email має містити символ '@'";
@@ -53,7 +53,7 @@ export const validateEmail = (value: string) => {
 };
 
 export const validateSecretWord = (value: string) => {
-  if (!value) return "Обов’язкове поле";
+  if (!value) return "Поле не може бути пустим";
 
   if (value.length < 6) {
     return "Секретне слово має містити щонайменше 6 символів";
@@ -63,7 +63,7 @@ export const validateSecretWord = (value: string) => {
 };
 
 export const validateDate = (value: string) => {
-  if (!value) return "Обов’язкове поле";
+  if (!value) return "Поле не може бути пустим";
 
   const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(19|20)\d{2}$/;
   if (!dateRegex.test(value)) {
@@ -87,7 +87,7 @@ export const validateWhenIssued = (
   value: string,
   allValues: Record<string, any>
 ) => {
-  if (!value) return "Обов’язкове поле";
+  if (!value) return "Поле не може бути пустим";
 
   const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(19|20)\d{2}$/;
   if (!dateRegex.test(value)) {
@@ -118,7 +118,7 @@ export const validateValidUntil = (
   value: string,
   allValues: Record<string, any>
 ) => {
-  if (!value) return "Обов’язкове поле";
+  if (!value) return "Поле не може бути пустим";
 
   const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(19|20)\d{2}$/;
   if (!dateRegex.test(value)) {
